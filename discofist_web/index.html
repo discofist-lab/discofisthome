@@ -4,10 +4,27 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Disco Fist</title>
+
+  <!-- Open Graph metadata -->
+  <meta property="og:title" content="Disco Fist" />
+  <meta property="og:description" content="Ritualistic techno and collective frequency." />
+  <meta property="og:image" content="https://ihatedjs.de/discofist_web/homepagelogo.jpeg" />
+  <meta property="og:url" content="https://ihatedjs.de/" />
+  <meta property="og:type" content="website" />
+
+  <!-- Twitter card support -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Disco Fist" />
+  <meta name="twitter:description" content="Ritualistic techno and collective frequency." />
+  <meta name="twitter:image" content="https://ihatedjs.de/discofist_web/homepagelogo.jpeg" />
+
+  <!-- Favicon -->
+  <link rel="icon" href="homepagelogo.jpeg" type="image/jpeg" />
+
   <style>
     body {
       margin: 0;
-      background: #0a0a0a;
+      background: #ffffff; /* white background */
       display: flex;
       justify-content: center;
       align-items: center;
@@ -21,11 +38,12 @@
       top: 50%;
       left: 100%;
       font-size: 5rem;
-      color: rgba(200,200,200,0.1); /* light grey, very subtle */
+      font-family: "Courier New", monospace; /* monospace font */
+      color: rgba(50,50,50,0.1); /* subtle grey for contrast on white */
       white-space: nowrap;
       transform: translateY(-50%);
       animation: scrollText 20s linear infinite;
-      pointer-events: none; /* so it doesn’t block clicks */
+      pointer-events: none; /* doesn’t block clicks */
     }
 
     @keyframes scrollText {
