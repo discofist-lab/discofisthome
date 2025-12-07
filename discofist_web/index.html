@@ -7,7 +7,7 @@
 
   <!-- Open Graph metadata -->
   <meta property="og:title" content="Disco Fist" />
-  <meta property="og:description" content="DiscoFist Collective Berlin / Rotterdam" />
+  <meta property="og:description" content="Ritualistic techno and collective frequency." />
   <meta property="og:image" content="https://ihatedjs.de/discofist_web/homepagelogo.jpeg" />
   <meta property="og:url" content="https://ihatedjs.de/" />
   <meta property="og:type" content="website" />
@@ -22,6 +22,10 @@
   <link rel="icon" href="homepagelogo.jpeg" type="image/jpeg" />
 
   <style>
+    :root {
+      --bg-text-size: 3rem; /* <<< adjust this value to change background text size */
+    }
+
     body {
       margin: 0;
       background: #ffffff; /* white background */
@@ -37,13 +41,13 @@
       position: absolute;
       top: 50%;
       left: 100%;
-      font-size: 5rem;
-      font-family: "Courier New", monospace; /* monospace font */
+      font-size: var(--bg-text-size); /* uses the adjustable variable */
+      font-family: "Courier New", monospace;
       color: rgba(50,50,50,0.1); /* subtle grey for contrast on white */
       white-space: nowrap;
       transform: translateY(-50%);
       animation: scrollText 20s linear infinite;
-      pointer-events: none; /* doesn’t block clicks */
+      pointer-events: none;
     }
 
     @keyframes scrollText {
@@ -58,7 +62,7 @@
       max-width: 90vw;
       opacity: 0;
       animation: fadeIn 2s ease-out forwards;
-      z-index: 1; /* keep image above background text */
+      z-index: 1;
     }
 
     .image-container img {
@@ -89,13 +93,13 @@
 </head>
 <body>
   <!-- Scrolling background text -->
-  <div class="background-text">DISCOFISTCOLLECTIVE IHATEDJS.DE DISCOFISTCOLLECTIVE IHATEDJS DISCOFISTCOLLECTIVE</div>
+  <div class="background-text">DISCOFISTCOLLECTIVE IHATEDJS.DE DISCOFISTCOLLECTIVE IHATEDJS.DE</div>
 
   <!-- Central image with split links -->
   <div class="image-container">
     <a href="https://www.soundcloud.com/disco-fist" target="_blank" class="link-zone top-link"></a>
     <a href="https://www.instagram.com/disco.fist/" target="_blank" class="link-zone bottom-link"></a>
-    <img src="homepagelogo.jpeg" alt="Disco Fist Logo" />
+    <img src="aquacopy.jpeg" alt="Disco Fist Logo" />
   </div>
 </body>
 </html>
