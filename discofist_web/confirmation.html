@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Disco Fist – Order Confirmed</title>
+  <link rel="icon" href="discofistweb/favicon.png" type="image/png" />
+  <style>
+    body { margin:0; background:#aaa; font-family:"Courier New", monospace; text-align:center; }
+    .menu {
+      display:flex; justify-content:center; background:#444; padding:15px 0;
+      position:fixed; top:0; left:0; width:100%; z-index:10; flex-wrap:wrap;
+    }
+    .menu a {
+      color:#ddd; text-decoration:none; margin:0 20px; font-weight:bold;
+      letter-spacing:2px; transition:color 0.3s ease;
+    }
+    .menu a:hover { color:#5a7fa3; }
+    .menu a.active { color:#5a7fa3; }
+    .confirmation {
+      margin:120px auto; max-width:600px; padding:40px;
+      background:#f9f9f9; border:1px solid #ddd; box-shadow:0 4px 12px rgba(0,0,0,0.1);
+    }
+    .confirmation h2 { margin-bottom:20px; font-size:24px; }
+    .confirmation p { font-size:16px; color:#333; }
+    .confirmation a {
+      display:inline-block; margin:10px; padding:12px 24px;
+      background:#000; color:#fff; text-decoration:none; font-weight:bold;
+      transition:background 0.3s ease;
+    }
+    .confirmation a:hover { background:#33d6d2; color:#000; }
+  </style>
+</head>
+<body>
+  <nav class="menu">
+    <a href="index.html">DISCO FIST</a>
+    <a href="pagetwo.html">LISTEN</a>
+    <a href="shop.html">SHOP</a>
+    <a href="cart.html">CART</a>
+    <a href="contact.html">CONTACT</a>
+  </nav>
+
+  <div class="confirmation">
+    <h2>Thank you for your order!</h2>
+    <p>Your payment was successful. We’ll be in touch soon with shipping details.</p>
+    <a href="shop.html">Continue Shopping</a>
+    <a href="index.html">Back to Home</a>
+  </div>
+</body>
+</html>
