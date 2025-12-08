@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Disco Fist – Cart</title>
+  <link rel="icon" href="discofistweb/favicon.png" type="image/png" />
+  <style>
+    body { margin:0; background:#aaa; font-family: "Courier New", monospace; }
+    .menu {
+      display:flex; justify-content:center; background:#444; padding:15px 0;
+      position:fixed; top:0; left:0; width:100%; z-index:10; flex-wrap:wrap;
+    }
+    .menu a {
+      color:#ddd; text-decoration:none; margin:0 20px; font-weight:bold;
+      letter-spacing:2px; transition:color 0.3s ease;
+    }
+    .menu a:hover { color:#5a7fa3; }
+    .menu a.active { color:#5a7fa3; }
+
+    .cart-container {
+      margin:120px auto; max-width:600px; padding:20px;
+      border:1px solid #ddd; background:#f9f9f9;
+    }
+
+    #cart-items { list-style:none; padding:0; }
+    #cart-items li {
+      margin:10px 0; display:flex; justify-content:space-between; align-items:center;
+    }
+
+    input[type="number"] { width:60px; }
+
+    #cart-total {
+      font-weight:bold; margin-top:20px;
+    }
+
+    #clear-cart {
+      margin-top:20px; padding:10px 20px;
+      background:#000; color:#fff; border:none;
+      font-weight:bold; cursor:pointer;
+    }
+
+    #clear-cart:hover { background:#33d6d2; color:#000; }
+
+    #paypal-button-container {
+      margin-top:30px; text-align:center;
+    }
+  </style>
+  <!-- PayPal SDK -->
+  <script src="https://www.paypal.com/sdk/js?client-id=AVs6QFX0RCjlzh_jXhnl&currency=EUR"></script>
+</head>
+<body>
+  <nav class="menu">
+    <a href="index.html">DISCO FIST</a>
+    <a href="pagetwo.html">LISTEN</a>
+    <a href="shop.html">SHOP</a>
+    <a href="cart.html" class="active">CART</a>
+    <a href="contact.html">CONTACT</a>
+  </nav>
+
+  <div class="cart-container">
+    <h2>Your Cart</h2>
+    <ul id="cart-items"></ul>
+    <p id="cart-total">Total: €0.00</p>
+    <button id="clear-cart">Clear Cart</button>
+
+    <!-- PayPal button -->
+    <div id="paypal-button-container"></div>
+  </div>
+
+  <script>
+    let cartItems = JSON.parse(localStorage.getItem('cart') || '[]');
+    const cartList = document.getElementById('cart-items');
+    const cartTotal = document.getElementById('cart-total');
+
+    function renderCart() {
+      cartList.innerHTML = '';
+      let total = 0;
+
+      cartItems.forEach((item, index) => {
+        const li = document.createElement('li');
+        li.innerHTML = `
+          ${item.product} – €${item.price.toFixed(2)} x 
+          <input type="number" min="0" value="${item.quantity}" data-index="${index}">
+        `;
+        cartList.appendChild(li);
+        total += item.price * item.quantity;
+      });
+
+      cartTotal.textContent = `Total: €${total.toFixed(2)}`;
+      localStorage.setItem('cart', JSON.stringify(cartItems));
+      return total;
+    }
+
+    cartList.addEventListener('input', e => {
+      if (e.target.type === 'number') {
+        const idx = e.target.getAttribute('data-index');
+        const qty = parseInt(e.target.value);
+        if (qty <= 0) {
+          cartItems.splice(idx, 1);
+        } else {
+          cartItems[idx].quantity = qty;
+        }
+        renderCart();
+      }
+    });
+
+    document.getElementById('clear-cart').addEventListener('click', () => {
+      cartItems = [];
+      localStorage.removeItem('cart');
+      renderCart();
+    });
+
+    const totalAmount = renderCart();
+
+    // PayPal integration
+    paypal.Buttons({
+      createOrder: function(data, actions) {
+        return actions.order.create({
+          purchase_units: [{
+            amount: { value: totalAmount.toFixed(2) }
+          }]
+        });
+      },
+      onApprove: function(data, actions) {
+        return actions.order.capture().then(function(details) {
+          alert('Transaction completed by ' + details.payer.name.given_name);
+          // Clear cart after payment
+          localStorage.removeItem('cart');
+          localStorage.removeItem('quantities');
+          location.reload();
+        });
+      }
+    }).render('#paypal-button-container');
+  </script>
+</body>
+</html>
