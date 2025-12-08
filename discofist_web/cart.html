@@ -30,23 +30,21 @@
 
     input[type="number"] { width:60px; }
 
-    #cart-total {
-      font-weight:bold; margin-top:20px;
-    }
+    #cart-total { font-weight:bold; margin-top:20px; }
 
-    #clear-cart {
+    #clear-cart, #continue-shopping {
       margin-top:20px; padding:10px 20px;
       background:#000; color:#fff; border:none;
       font-weight:bold; cursor:pointer;
+      text-decoration:none; display:inline-block;
+    }
+    #clear-cart:hover, #continue-shopping:hover {
+      background:#33d6d2; color:#000;
     }
 
-    #clear-cart:hover { background:#33d6d2; color:#000; }
-
-    #paypal-button-container {
-      margin-top:30px; text-align:center;
-    }
+    #paypal-button-container { margin-top:30px; text-align:center; }
+    #empty-message { margin-top:30px; text-align:center; color:#555; }
   </style>
-  <!-- PayPal SDK -->
   <script src="https://www.paypal.com/sdk/js?client-id=AVs6QFX0RCjlzh_jXhnl&currency=EUR"></script>
 </head>
 <body>
@@ -63,15 +61,16 @@
     <ul id="cart-items"></ul>
     <p id="cart-total">Total: €0.00</p>
     <button id="clear-cart">Clear Cart</button>
-
-    <!-- PayPal button -->
+    <a href="shop.html" id="continue-shopping">Continue Shopping</a>
     <div id="paypal-button-container"></div>
+    <div id="empty-message"></div>
   </div>
 
   <script>
     let cartItems = JSON.parse(localStorage.getItem('cart') || '[]');
     const cartList = document.getElementById('cart-items');
     const cartTotal = document.getElementById('cart-total');
+    const emptyMessage = document.getElementById('empty-message');
 
     function renderCart() {
       cartList.innerHTML = '';
@@ -101,7 +100,8 @@
         } else {
           cartItems[idx].quantity = qty;
         }
-        renderCart();
+        const total = renderCart();
+        updatePayPal(total);
       }
     });
 
@@ -109,29 +109,35 @@
       cartItems = [];
       localStorage.removeItem('cart');
       renderCart();
+      updatePayPal(0);
     });
 
     const totalAmount = renderCart();
+    updatePayPal(totalAmount);
 
-    // PayPal integration
-    paypal.Buttons({
-      createOrder: function(data, actions) {
-        return actions.order.create({
-          purchase_units: [{
-            amount: { value: totalAmount.toFixed(2) }
-          }]
-        });
-      },
-      onApprove: function(data, actions) {
-        return actions.order.capture().then(function(details) {
-          alert('Transaction completed by ' + details.payer.name.given_name);
-          // Clear cart after payment
-          localStorage.removeItem('cart');
-          localStorage.removeItem('quantities');
-          location.reload();
-        });
+    function updatePayPal(total) {
+      document.getElementById('paypal-button-container').innerHTML = '';
+      emptyMessage.textContent = '';
+
+      if (total > 0) {
+        paypal.Buttons({
+          createOrder: (data, actions) => {
+            return actions.order.create({
+              purchase_units: [{ amount: { value: total.toFixed(2) } }]
+            });
+          },
+          onApprove: (data, actions) => {
+            return actions.order.capture().then(details => {
+              localStorage.removeItem('cart');
+              localStorage.removeItem('quantities');
+              window.location.href = "confirmation.html";
+            });
+          }
+        }).render('#paypal-button-container');
+      } else {
+        emptyMessage.textContent = 'Your cart is empty.';
       }
-    }).render('#paypal-button-container');
+    }
   </script>
 </body>
 </html>
