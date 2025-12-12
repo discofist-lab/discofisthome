@@ -8,47 +8,134 @@
   <style>
     body {
       margin:0;
-      background:#aaa;
+      background:#000;
       font-family:"Courier New", monospace;
     }
 
-    /* Menu bar */
+    /* Desktop menu */
     .menu {
-      display:flex; justify-content:center; background:#444; padding:15px 0;
-      position:fixed; top:0; left:0; width:100%; z-index:10; flex-wrap:wrap;
+      display:flex;
+      justify-content:center;
+      background:#111111;
+      padding:15px 0;
+      position:fixed;
+      top:0;
+      left:0;
+      width:100%;
+      z-index:10;
+      flex-wrap:wrap;
+      transition:max-height 0.3s ease-out, opacity 0.3s ease-out;
     }
+
     .menu a {
-      color:#ddd; text-decoration:none; margin:0 20px; font-weight:bold;
-      letter-spacing:2px; transition:color 0.3s ease;
+      color:#ddd;
+      text-decoration:none;
+      margin:0 20px;
+      font-weight:bold;
+      letter-spacing:2px;
+      transition:color 0.3s ease;
     }
+
     .menu a:hover { color:#5a7fa3; }
     .menu a.active { color:#5a7fa3; }
 
+    /* Disco ball icon button (mobile only) */
+    .menu-toggle {
+      display:none;
+      position:fixed;
+      top:15px;
+      right:20px;
+      z-index:20;
+      background:none;
+      border:none;
+      cursor:pointer;
+      padding:0;
+    }
+
+    .menu-toggle img {
+      width:32px;
+      height:32px;
+      filter:drop-shadow(0 0 3px rgba(0,0,0,0.4));
+    }
+
+    /* Mobile dropdown animation */
+    @media screen and (max-width:600px) {
+      .menu {
+        display:flex;
+        flex-direction:column;
+        align-items:center;
+        overflow:hidden;
+        max-height:0;
+        opacity:0;
+        padding:0;
+      }
+
+      .menu.show {
+        max-height:300px;
+        opacity:1;
+        padding:20px 0;
+      }
+
+      .menu a {
+        margin:10px 0;
+      }
+
+      .menu-toggle {
+        display:block;
+      }
+    }
+
     /* Contact section */
     .contact-container {
-      margin:120px auto; max-width:600px; padding:40px;
-      background:#f9f9f9; border:1px solid #ddd; text-align:center;
+      margin:120px auto;
+      max-width:600px;
+      padding:40px;
+      background:#f9f9f9;
+      border:1px solid #ddd;
+      text-align:center;
       box-shadow:0 4px 12px rgba(0,0,0,0.1);
     }
+
     .contact-container h2 {
-      margin-bottom:20px; font-size:24px; letter-spacing:2px;
+      margin-bottom:20px;
+      font-size:24px;
+      letter-spacing:2px;
     }
+
     .contact-container p {
-      margin:15px 0; font-size:16px; color:#333;
+      margin:15px 0;
+      font-size:16px;
+      color:#333;
     }
+
     .contact-link {
-      display:inline-block; margin:15px; padding:12px 24px;
-      background:#000; color:#fff; text-decoration:none; font-weight:bold;
-      transition:all 0.3s ease; border-radius:4px;
+      display:inline-block;
+      margin:15px;
+      padding:12px 24px;
+      background:#000;
+      color:#fff;
+      text-decoration:none;
+      font-weight:bold;
+      transition:all 0.3s ease;
+      border-radius:4px;
     }
+
     .contact-link:hover {
-      background:#33d6d2; color:#000; transform:scale(1.05);
+      background:#33d6d2;
+      color:#000;
+      transform:scale(1.05);
     }
   </style>
 </head>
 <body>
+
+  <!-- Disco ball menu button -->
+  <button class="menu-toggle" onclick="toggleMenu()">
+    <img src="discofistweb/discoball.png" alt="Menu">
+  </button>
+
   <!-- Menu bar -->
-  <nav class="menu">
+  <nav class="menu" id="mainMenu">
     <a href="index.html">DISCO FIST</a>
     <a href="pagetwo.html">LISTEN</a>
     <a href="shop.html">SHOP</a>
@@ -59,11 +146,19 @@
   <!-- Contact content -->
   <div class="contact-container">
     <h2>Contact Disco Fist</h2>
-    <p>We’d love to hear from you! 
-    <p>For help with orders or if you want to send us music:
+    <p>We’d love to hear from you!</p>
+    <p>For help with orders or if you want to send us music:</p>
     <p>reach out to us via email or connect with us on Instagram!</p>
+
     <a class="contact-link" href="mailto:dscofist@gmail.com">📧 Email Us</a>
     <a class="contact-link" href="https://instagram.com/disco.fist" target="_blank">📸 Instagram</a>
   </div>
+
+  <script>
+    function toggleMenu() {
+      document.getElementById('mainMenu').classList.toggle('show');
+    }
+  </script>
+
 </body>
 </html>
