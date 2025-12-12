@@ -5,119 +5,430 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Disco Fist – Cart</title>
   <link rel="icon" href="discofistweb/favicon.png" type="image/png" />
-  <style>
-    body { margin:0; background:#aaa; font-family: "Courier New", monospace; }
-    .menu {
-      display:flex; justify-content:center; background:#444; padding:15px 0;
-      position:fixed; top:0; left:0; width:100%; z-index:10; flex-wrap:wrap;
-    }
-    .menu a {
-      color:#ddd; text-decoration:none; margin:0 20px; font-weight:bold;
-      letter-spacing:2px; transition:color 0.3s ease;
-    }
-    .menu a:hover { color:#5a7fa3; }
-    .menu a.active { color:#5a7fa3; }
 
+  <style>
+    body { 
+      margin:0; 
+      background:#000; 
+      font-family: "Courier New", monospace; 
+    }
+
+    /* Slide-in animation */
     .cart-container {
-      margin:120px auto; max-width:600px; padding:20px;
-      border:1px solid #ddd; background:#f9f9f9;
+      animation: slideUp 0.8s ease-out;
+    }
+    @keyframes slideUp {
+      from { opacity:0; transform: translateY(40px); }
+      to { opacity:1; transform: translateY(0); }
+    }
+
+    /* Desktop menu */
+    .menu {
+      display:flex;
+      justify-content:center;
+      background:#111111;
+      padding:15px 0;
+      position:fixed;
+      top:0;
+      left:0;
+      width:100%;
+      z-index:20;
+      flex-wrap:wrap;
+    }
+
+    .menu a {
+      color:#ddd;
+      text-decoration:none;
+      margin:0 20px;
+      font-weight:bold;
+      letter-spacing:2px;
+      transition:color 0.3s ease;
+      position:relative;
+    }
+
+    .menu a:hover,
+    .menu a.active {
+      color:#5a7fa3;
+    }
+
+    /* Mini-cart preview */
+    #mini-cart-preview {
+      position:absolute;
+      top:40px;
+      right:0;
+      background:rgba(0,0,0,0.8);
+      color:#fff;
+      padding:12px 16px;
+      border-radius:6px;
+      font-size:12px;
+      display:none;
+      z-index:999;
+      width:160px;
+      text-align:left;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity:0; transform:translateY(-5px); }
+      to { opacity:1; transform:translateY(0); }
+    }
+
+    #mini-cart-preview a {
+      color:#33d6d2;
+      text-decoration:none;
+      font-weight:bold;
+      display:block;
+      margin-top:6px;
+    }
+
+    /* Mobile menu */
+    .menu-toggle {
+      display:none;
+      position:fixed;
+      top:15px;
+      right:20px;
+      z-index:30;
+      background:none;
+      border:none;
+      cursor:pointer;
+      padding:0;
+    }
+
+    .menu-toggle img {
+      width:32px;
+      height:32px;
+      filter:drop-shadow(0 0 3px rgba(0,0,0,0.4));
+    }
+
+    @media screen and (max-width:600px) {
+      .menu {
+        flex-direction:column;
+        align-items:center;
+        overflow:hidden;
+        max-height:0;
+        opacity:0;
+        padding:0;
+      }
+      .menu.show {
+        max-height:300px;
+        opacity:1;
+        padding:20px 0;
+      }
+      .menu a {
+        margin:10px 0;
+      }
+      .menu-toggle {
+        display:block;
+      }
+    }
+
+    /* Cart container */
+    .cart-container {
+      margin:120px auto;
+      max-width:600px;
+      padding:20px;
+      border:1px solid #ddd;
+      background:#f9f9f9;
     }
 
     #cart-items { list-style:none; padding:0; }
     #cart-items li {
-      margin:10px 0; display:flex; justify-content:space-between; align-items:center;
+      margin:10px 0;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
     }
 
-    input[type="number"] { width:60px; }
+    select { width:60px; }
 
-    #cart-total { font-weight:bold; margin-top:20px; }
-
-    #clear-cart, #continue-shopping {
-      margin-top:20px; padding:10px 20px;
-      background:#000; color:#fff; border:none;
-      font-weight:bold; cursor:pointer;
-      text-decoration:none; display:inline-block;
-    }
-    #clear-cart:hover, #continue-shopping:hover {
-      background:#33d6d2; color:#000;
+    #cart-total, #discount-line, #subtotal-line {
+      font-weight:bold;
+      margin-top:10px;
     }
 
-    #paypal-button-container { margin-top:30px; text-align:center; }
-    #empty-message { margin-top:30px; text-align:center; color:#555; }
+    #discount-code-container {
+      margin-top:20px;
+    }
+
+    #discount-input {
+      padding:6px;
+      width:150px;
+      border:1px solid #ccc;
+      font-family:"Courier New", monospace;
+    }
+
+    #apply-discount {
+      padding:6px 12px;
+      background:#000;
+      color:#fff;
+      border:none;
+      cursor:pointer;
+      font-weight:bold;
+    }
+
+    #apply-discount:hover {
+      background:#33d6d2;
+      color:#000;
+    }
+
+    #discount-message {
+      margin-top:10px;
+      font-size:12px;
+      color:#e33;
+    }
+
+    #clear-cart, #continue-shopping, #checkout-button, #remove-all {
+      margin-top:20px;
+      padding:10px 20px;
+      background:#000;
+      color:#fff;
+      border:none;
+      font-weight:bold;
+      cursor:pointer;
+      text-decoration:none;
+      display:inline-block;
+    }
+
+    #clear-cart:hover, #continue-shopping:hover, #checkout-button:hover, #remove-all:hover {
+      background:#33d6d2;
+      color:#000;
+    }
+
+    #paypal-button-container { 
+      margin-top:30px; 
+      text-align:center; 
+    }
+
+    #empty-message { 
+      margin-top:30px; 
+      text-align:center; 
+      color:#555; 
+    }
   </style>
+
   <script src="https://www.paypal.com/sdk/js?client-id=AVs6QFX0RCjlzh_jXhnl&currency=EUR"></script>
 </head>
 <body>
-  <nav class="menu">
+
+  <!-- Mobile menu button -->
+  <button class="menu-toggle" onclick="toggleMenu()">
+    <img src="discofistweb/discoball.png" alt="Menu">
+  </button>
+
+  <!-- Menu -->
+  <nav class="menu" id="mainMenu">
     <a href="index.html">DISCO FIST</a>
     <a href="pagetwo.html">LISTEN</a>
     <a href="shop.html">SHOP</a>
-    <a href="cart.html" class="active">CART</a>
+
+    <a href="cart.html" class="active" id="cart-link">
+      CART
+      <div id="mini-cart-preview"></div>
+    </a>
+
     <a href="contact.html">CONTACT</a>
   </nav>
 
   <div class="cart-container">
     <h2>Your Cart</h2>
+
     <ul id="cart-items"></ul>
+
+    <p id="subtotal-line">Subtotal: €0.00</p>
+
+    <!-- Discount input -->
+    <div id="discount-code-container">
+      <input id="discount-input" placeholder="discount code">
+      <button id="apply-discount">Apply</button>
+      <div id="discount-message"></div>
+    </div>
+
+    <p id="discount-line" style="display:none;"></p>
+
     <p id="cart-total">Total: €0.00</p>
+
+    <button id="checkout-button">Checkout</button>
+    <button id="remove-all">Remove All</button>
     <button id="clear-cart">Clear Cart</button>
     <a href="shop.html" id="continue-shopping">Continue Shopping</a>
+
     <div id="paypal-button-container"></div>
     <div id="empty-message"></div>
   </div>
 
   <script>
     let cartItems = JSON.parse(localStorage.getItem('cart') || '[]');
-    const cartList = document.getElementById('cart-items');
-    const cartTotal = document.getElementById('cart-total');
-    const emptyMessage = document.getElementById('empty-message');
+    let activeDiscount = null;
 
+    const cartList = document.getElementById('cart-items');
+    const subtotalLine = document.getElementById('subtotal-line');
+    const discountLine = document.getElementById('discount-line');
+    const cartTotal = document.getElementById('cart-total');
+    const discountInput = document.getElementById('discount-input');
+    const discountMessage = document.getElementById('discount-message');
+    const miniPreview = document.getElementById('mini-cart-preview');
+
+    /* Discount codes */
+    const discountCodes = {
+      "DISCO10": { type:"percent", value:10 },
+      "FIST20": { type:"percent", value:20 },
+      "FREESHIP": { type:"fixed", value:5 }
+    };
+
+    /* Render cart */
     function renderCart() {
       cartList.innerHTML = '';
-      let total = 0;
+      let subtotal = 0;
 
       cartItems.forEach((item, index) => {
         const li = document.createElement('li');
-        li.innerHTML = `
-          ${item.product} – €${item.price.toFixed(2)} x 
-          <input type="number" min="0" value="${item.quantity}" data-index="${index}">
-        `;
+
+        const label = document.createElement('span');
+        label.textContent = `${item.product} – €${item.price.toFixed(2)} x `;
+
+        const select = document.createElement('select');
+        select.setAttribute('data-index', index);
+
+        for (let i = 1; i <= 10; i++) {
+          const option = document.createElement('option');
+          option.value = i;
+          option.textContent = i;
+          if (i === item.quantity) option.selected = true;
+          select.appendChild(option);
+        }
+
+        const removeBtn = document.createElement('button');
+        removeBtn.textContent = '✕';
+        removeBtn.style.marginLeft = '10px';
+        removeBtn.style.background = 'none';
+        removeBtn.style.border = 'none';
+        removeBtn.style.color = '#e33';
+        removeBtn.style.cursor = 'pointer';
+
+        removeBtn.onclick = () => {
+          cartItems.splice(index, 1);
+          updateEverything();
+        };
+
+        li.appendChild(label);
+        li.appendChild(select);
+        li.appendChild(removeBtn);
         cartList.appendChild(li);
-        total += item.price * item.quantity;
+
+        subtotal += item.price * item.quantity;
       });
 
-      cartTotal.textContent = `Total: €${total.toFixed(2)}`;
+      subtotalLine.textContent = `Subtotal: €${subtotal.toFixed(2)}`;
       localStorage.setItem('cart', JSON.stringify(cartItems));
-      return total;
+
+      return subtotal;
     }
 
-    cartList.addEventListener('input', e => {
-      if (e.target.type === 'number') {
+    /* Apply discount */
+    function applyDiscount(subtotal) {
+      if (!activeDiscount) {
+        discountLine.style.display = "none";
+        return subtotal;
+      }
+
+      const code = activeDiscount;
+      const rule = discountCodes[code];
+
+      let discountAmount = 0;
+
+      if (rule.type === "percent") {
+        discountAmount = subtotal * (rule.value / 100);
+      } else if (rule.type === "fixed") {
+        discountAmount = rule.value;
+      }
+
+      discountLine.style.display = "block";
+      discountLine.textContent = `Discount (${code}): -€${discountAmount.toFixed(2)}`;
+
+      return Math.max(0, subtotal - discountAmount);
+    }
+
+    /* Update mini-cart preview */
+    function updateMiniPreview() {
+      const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+      const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+      if (totalItems === 0) {
+        miniPreview.innerHTML = "Cart is empty";
+      } else {
+        miniPreview.innerHTML = `
+          ${totalItems} item${totalItems > 1 ? 's' : ''}<br>
+          Total: €${subtotal.toFixed(2)}<br>
+          <a href="cart.html">View Cart →</a>
+        `;
+      }
+    }
+
+    /* Update everything */
+    function updateEverything() {
+      const subtotal = renderCart();
+      const total = applyDiscount(subtotal);
+      cartTotal.textContent = `Total: €${total.toFixed(2)}`;
+      updateMiniPreview();
+      updatePayPal(total);
+    }
+
+    /* Discount apply button */
+    document.getElementById('apply-discount').addEventListener('click', () => {
+      const code = discountInput.value.trim().toUpperCase();
+
+      if (discountCodes[code]) {
+        activeDiscount = code;
+        discountMessage.style.color = "#33d6d2";
+        discountMessage.textContent = `Discount applied: ${code}`;
+      } else {
+        activeDiscount = null;
+        discountMessage.style.color = "#e33";
+        discountMessage.textContent = "Invalid code";
+      }
+
+      updateEverything();
+    });
+
+    /* Quantity change */
+    cartList.addEventListener('change', e => {
+      if (e.target.tagName === 'SELECT') {
         const idx = e.target.getAttribute('data-index');
-        const qty = parseInt(e.target.value);
-        if (qty <= 0) {
-          cartItems.splice(idx, 1);
-        } else {
-          cartItems[idx].quantity = qty;
-        }
-        const total = renderCart();
-        updatePayPal(total);
+        cartItems[idx].quantity = parseInt(e.target.value);
+        updateEverything();
       }
     });
 
-    document.getElementById('clear-cart').addEventListener('click', () => {
+    /* Remove All */
+    document.getElementById('remove-all').addEventListener('click', () => {
       cartItems = [];
-      localStorage.removeItem('cart');
-      renderCart();
-      updatePayPal(0);
+      activeDiscount = null;
+      discountMessage.textContent = "";
+      updateEverything();
     });
 
-    const totalAmount = renderCart();
-    updatePayPal(totalAmount);
+    /* Clear Cart */
+    document.getElementById('clear-cart').addEventListener('click', () => {
+      cartItems = [];
+      activeDiscount = null;
+      discountMessage.textContent = "";
+      updateEverything();
+    });
 
+    /* Checkout scroll */
+    document.getElementById('checkout-button').addEventListener('click', () => {
+      document.getElementById('paypal-button-container').scrollIntoView({ behavior: 'smooth' });
+    });
+
+    /* Mini-cart hover */
+    const cartLink = document.getElementById('cart-link');
+    cartLink.addEventListener('mouseenter', () => miniPreview.style.display = 'block');
+    cartLink.addEventListener('mouseleave', () => miniPreview.style.display = 'none');
+
+    /* PayPal */
     function updatePayPal(total) {
-      document.getElementById('paypal-button-container').innerHTML = '';
-      emptyMessage.textContent = '';
+      const container = document.getElementById('paypal-button-container');
+      container.innerHTML = '';
 
       if (total > 0) {
         paypal.Buttons({
@@ -127,17 +438,24 @@
             });
           },
           onApprove: (data, actions) => {
-            return actions.order.capture().then(details => {
+            return actions.order.capture().then(() => {
               localStorage.removeItem('cart');
-              localStorage.removeItem('quantities');
               window.location.href = "confirmation.html";
             });
           }
         }).render('#paypal-button-container');
       } else {
-        emptyMessage.textContent = 'Your cart is empty.';
+        document.getElementById('empty-message').textContent = 'Your cart is empty.';
       }
     }
+
+    /* Initial load */
+    updateEverything();
+
+    function toggleMenu() {
+      document.getElementById('mainMenu').classList.toggle('show');
+    }
   </script>
+
 </body>
 </html>
