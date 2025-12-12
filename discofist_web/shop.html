@@ -283,6 +283,38 @@
       text-decoration: none;
       border-radius: 4px;
     }
+
+/* -------------------------------------------
+   SIMPLE HAMBURGER ICON (PURE CSS)
+------------------------------------------- */
+.hamburger {
+  width: 28px;
+  height: 3px;
+  background: #fff;
+  position: relative;
+  transition: background 0.3s ease;
+}
+
+.hamburger::before,
+.hamburger::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 28px;
+  height: 3px;
+  background: #fff;
+  transition: transform 0.3s ease;
+}
+
+.hamburger::before {
+  top: -8px;
+}
+
+.hamburger::after {
+  top: 8px;
+}
+
+
   </style>
 </head>
 
@@ -291,8 +323,9 @@
      MOBILE MENU TOGGLE BUTTON
   ----------------------------------------------------------- -->
   <button class="menu-toggle" onclick="toggleMenu()">
-    <img src="discofistweb/discoball.png" alt="Menu">
+    <div class="hamburger"></div>
   </button>
+
 
   <!-- -----------------------------------------------------------
      MAIN MENU
