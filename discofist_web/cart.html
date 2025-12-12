@@ -247,7 +247,15 @@
 
     <p id="cart-total">Total: €0.00</p>
 
-    <button id="checkout-button">Checkout</button>
+<p id="delivery-info">
+  *Free Delivery / Pickups In Berlin. Shipping 3€ Rest of Germany — 5€ All of Europe :)
+</p>
+
+
+    <button id="checkout-button" href="https://www.paypal.com/paypalme/discofist" target="_blank">
+  Checkout
+</a>
+>Checkout</button>
     <button id="remove-all">Remove All</button>
     <button id="clear-cart">Clear Cart</button>
     <a href="shop.html" id="continue-shopping">Continue Shopping</a>
@@ -417,8 +425,13 @@
 
     /* Checkout scroll */
     document.getElementById('checkout-button').addEventListener('click', () => {
-      document.getElementById('paypal-button-container').scrollIntoView({ behavior: 'smooth' });
-    });
+  showToast("Please Send Full Amount (incl. Shipping) Otherwise You Will Be Refunded And Wont Receive Your Super Cool DiscoFist Garment");
+
+  setTimeout(() => {
+    window.location.href = "https://www.paypal.com/paypalme/discofist";
+  }, 1200); // delay so the toast is visible
+});
+
 
     /* Mini-cart hover */
     const cartLink = document.getElementById('cart-link');
