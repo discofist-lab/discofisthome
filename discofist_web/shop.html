@@ -24,23 +24,6 @@
       font-family: "Courier New", monospace;
     }
 
-#cartToast {
-  position: fixed;
-  bottom: 30px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #33d6d2;
-  color: #000;
-  padding: 10px 20px;
-  border-radius: 4px;
-  font-weight: bold;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.4s ease;
-  z-index: 200;
-}
-
-
     /* -----------------------------------------------------------
        MENU + MOBILE TOGGLE
     ----------------------------------------------------------- */
@@ -224,34 +207,6 @@
       background: #666;
     }
 
-.hamburger {
-  width: 28px;
-  height: 3px;
-  background: white;
-  position: relative;
-  transition: 0.3s ease;
-}
-
-.hamburger::before,
-.hamburger::after {
-  content: "";
-  position: absolute;
-  width: 28px;
-  height: 3px;
-  background: white;
-  left: 0;
-  transition: 0.3s ease;
-}
-
-.hamburger::before {
-  top: -8px;
-}
-
-.hamburger::after {
-  top: 8px;
-}
-
-
     /* -----------------------------------------------------------
        MINI CART DRAWER
     ----------------------------------------------------------- */
@@ -317,19 +272,6 @@
       padding-top: 10px;
     }
 
-.qty-btn {
-  background: #333;
-  color: white;
-  border: 1px solid #555;
-  padding: 2px 6px;
-  cursor: pointer;
-  font-size: 12px;
-}
-.qty-btn:hover {
-  background: #555;
-}
-
-
     .checkout-btn {
       display: block;
       margin-top: 15px;
@@ -345,16 +287,12 @@
 </head>
 
 <body>
-
-  <div id="cartToast">Added to cart</div>
-
   <!-- -----------------------------------------------------------
      MOBILE MENU TOGGLE BUTTON
   ----------------------------------------------------------- -->
   <button class="menu-toggle" onclick="toggleMenu()">
-    <div class="hamburger"></div>
+    <img src="discofistweb/discoball.png" alt="Menu">
   </button>
-
 
   <!-- -----------------------------------------------------------
      MAIN MENU
@@ -621,18 +559,12 @@
           row.className = 'cart-item';
 
           row.innerHTML = `
-  <span>${item.product}</span>
-  <span>
-    <button class="qty-btn" onclick="decreaseQty(${index})">−</button>
-    <span style="margin:0 6px;">${item.quantity}</span>
-    <button class="qty-btn" onclick="increaseQty(${index})">+</button>
-  </span>
-  <span>
-    €${(item.price * item.quantity).toFixed(2)}
-    <span class="remove-btn" onclick="removeItem(${index})">✕</span>
-  </span>
-`;
-
+            <span>${item.product} x ${item.quantity}</span>
+            <span>
+              €${(item.price * item.quantity).toFixed(2)}
+              <span class="remove-btn" onclick="removeItem(${index})">✕</span>
+            </span>
+          `;
 
           cartItemsContainer.appendChild(row);
         });
@@ -648,29 +580,20 @@
       renderMiniCart();
     }
 
-   function addToCartByProductId(id) {
-  const product = products.find(p => p.id === id);
-  if (!product) return;
+    function addToCartByProductId(id) {
+      const product = products.find(p => p.id === id);
+      if (!product) return;
 
-  const existing = cart.find(item => item.product === product.name);
-  if (existing) {
-    existing.quantity += 1;
-  } else {
-    cart.push({
-      product: product.name,
-      price: product.price,
-      quantity: 1
-    });
-  }
-
-  saveCart();
-  updateBadge();
-  renderMiniCart();
-
-  // ✅ Show on-screen notification
-  showToast();
-}
-
+      const existing = cart.find(item => item.product === product.name);
+      if (existing) {
+        existing.quantity += 1;
+      } else {
+        cart.push({
+          product: product.name,
+          price: product.price,
+          quantity: 1
+        });
+      }
 
       saveCart();
       updateBadge();
@@ -765,33 +688,6 @@
         }
       });
     }
-
-function showToast() {
-  const toast = document.getElementById('cartToast');
-  toast.style.opacity = '1';
-  setTimeout(() => {
-    toast.style.opacity = '0';
-  }, 1200);
-}
-
-function increaseQty(index) {
-  cart[index].quantity += 1;
-  saveCart();
-  updateBadge();
-  renderMiniCart();
-}
-
-function decreaseQty(index) {
-  if (cart[index].quantity > 1) {
-    cart[index].quantity -= 1;
-  } else {
-    cart.splice(index, 1);
-  }
-  saveCart();
-  updateBadge();
-  renderMiniCart();
-}
-
 
     /* -----------------------------------------------------------
        INITIAL BOOT
