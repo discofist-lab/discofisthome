@@ -8,15 +8,15 @@
   <style>
     body {
       margin: 0;
-      background: #aaa;
+      background: #000;
       font-family: "Courier New", monospace;
     }
 
-    /* Menu bar */
+    /* Desktop menu bar */
     .menu {
       display: flex;
       justify-content: center;
-      background: #444; /* greyish background */
+      background: #111111;
       padding: 15px 0;
       position: fixed;
       top: 0;
@@ -24,6 +24,7 @@
       width: 100%;
       z-index: 10;
       flex-wrap: wrap;
+      transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
     }
 
     .menu a {
@@ -35,21 +36,100 @@
       transition: color 0.3s ease;
     }
 
-    .menu a:hover {
-      color: #5a7fa3;
-    }
-
+    .menu a:hover,
     .menu a.active {
       color: #5a7fa3;
     }
 
-    /* Embed container */
+    /* Disco ball icon button (mobile only) */
+    .menu-toggle {
+      display: none;
+      position: fixed;
+      top: 15px;
+      right: 20px;
+      z-index: 20;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .menu-toggle img {
+      width: 32px;
+      height: 32px;
+      filter: drop-shadow(0 0 3px rgba(0,0,0,0.4));
+    }
+
+    /* Mobile dropdown animation */
+    @media screen and (max-width: 600px) {
+      .menu {
+        flex-direction: column;
+        align-items: center;
+        overflow: hidden;
+        max-height: 0;
+        opacity: 0;
+        padding: 0;
+      }
+
+      .menu.show {
+        max-height: 300px;
+        opacity: 1;
+        padding: 20px 0;
+      }
+
+      .menu a {
+        margin: 10px 0;
+      }
+
+      .menu-toggle {
+        display: block;
+      }
+    }
+
+    /*  Banner carousel */
+    .banner-carousel {
+      position: relative;
+      width: 100%;
+      margin-top: 55px;
+      overflow: hidden;
+      min-height: 200px;
+      background: #000;
+      cursor: pointer;
+    }
+
+    .banner-carousel img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: auto;
+      opacity: 0;
+      filter: blur(8px);
+      transition: opacity 1.8s ease-in-out, filter 1.8s ease-in-out;
+      z-index: 0;
+    }
+
+    .banner-carousel img.active {
+      opacity: 1 !important;
+      filter: blur(0px) !important;
+      z-index: 1;
+    }
+
+    /*  SoundCloud embed container */
     .embed-container {
       width: 90vw;
       max-width: 800px;
-      margin: 100px auto 0;
+      margin: 30px auto 0; /* reduced spacing */
       padding: 20px;
       box-sizing: border-box;
+      opacity: 0;
+      animation: fadeIn 10s ease forwards;
+    }
+
+    /*  Fade-in animation */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
 
     iframe {
@@ -57,21 +137,17 @@
       height: 300px;
       border: none;
     }
-
-    @media (max-width: 600px) {
-      .menu {
-        flex-direction: column;
-        align-items: center;
-      }
-      .menu a {
-        margin: 10px 0;
-      }
-    }
   </style>
 </head>
 <body>
+
+  <!-- Disco ball menu button -->
+  <button class="menu-toggle" onclick="toggleMenu()">
+    <img src="discofistweb/discoball.png" alt="Menu">
+  </button>
+
   <!-- Menu bar -->
-  <nav class="menu">
+  <nav class="menu" id="mainMenu">
     <a href="index.html">DISCO FIST</a>
     <a href="pagetwo.html" class="active">LISTEN</a>
     <a href="shop.html">SHOP</a>
@@ -79,20 +155,67 @@
     <a href="contact.html">CONTACT</a>
   </nav>
 
-  <!-- SoundCloud embed -->
+  <!--  Clickable Banner Carousel -->
+  <a href="shop.html" style="display:block; text-decoration:none;">
+    <div class="banner-carousel">
+      <img src="shopbanner01.jpeg" class="banner active" alt="Banner 1">
+      <img src="shopbanner02.jpeg" class="banner" alt="Banner 2">
+      <img src="shopbanner03.jpeg" class="banner" alt="Banner 3">
+    </div>
+  </a>
+
+  <!--  FIRST SoundCloud embed (menu-bar color applied) -->
   <div class="embed-container">
     <iframe 
-      width="100%" 
-      height="300" 
-      scrolling="no" 
-      frameborder="no" 
-      allow="autoplay"
-      src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/soundcloud%3Aplaylists%3A1871143691%3Fsecret_token%3Ds-eeqNVy8lkHz&color=%23000000&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true">
+      src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/soundcloud%3Aplaylists%3A1871143691%3Fsecret_token%3Ds-eeqNVy8lkHz&color=%23111111&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true">
     </iframe>
-    <div style="font-size: 10px; color: #cccccc; line-break: anywhere; word-break: normal; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-family: Interstate,Lucida Grande,Lucida Sans Unicode,Lucida Sans,Garuda,Verdana,Tahoma,sans-serif; font-weight: 100;">
-      <a href="https://soundcloud.com/disco-fist" title="Disco Fist" target="_blank" style="color: #cccccc; text-decoration: none;">Disco Fist</a> · 
-      <a href="https://soundcloud.com/disco-fist/sets/discofist-invites/s-eeqNVy8lkHz" title="DiscoFist Invites" target="_blank" style="color: #cccccc; text-decoration: none;">DiscoFist Invites</a>
+
+    <div style="font-size: 10px; color: #cccccc; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+      <a href="https://soundcloud.com/disco-fist" target="_blank" style="color: #cccccc; text-decoration: none;">Disco Fist</a> · 
+      <a href="https://soundcloud.com/disco-fist/sets/discofist-invites/s-eeqNVy8lkHz" target="_blank" style="color: #cccccc; text-decoration: none;">DiscoFist Invites</a>
     </div>
   </div>
+
+  <!--  SECOND SoundCloud embed (menu-bar color applied + reduced spacing) -->
+  <div class="embed-container">
+    <iframe 
+      src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/soundcloud%253Aplaylists%253A2068462911&color=%23111111&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true">
+    </iframe>
+
+    <div style="font-size: 10px; color: #cccccc; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+      <a href="https://soundcloud.com/disco-fist" target="_blank" style="color: #cccccc; text-decoration: none;">Disco Fist</a> · 
+      <a href="https://soundcloud.com/disco-fist/sets/discofist-operator-radio" target="_blank" style="color: #cccccc; text-decoration: none;">DiscoFist @ Operator Radio</a>
+    </div>
+  </div>
+
+  <script>
+    function toggleMenu() {
+      document.getElementById('mainMenu').classList.toggle('show');
+    }
+
+    /*  Banner carousel logic */
+    const banners = document.querySelectorAll('.banner-carousel img');
+    let current = 0;
+    let carouselInterval;
+
+    function startCarousel() {
+      carouselInterval = setInterval(() => {
+        banners[current].classList.remove('active');
+        current = (current + 1) % banners.length;
+        banners[current].classList.add('active');
+      }, 5000);
+    }
+
+    function stopCarousel() {
+      clearInterval(carouselInterval);
+    }
+
+    startCarousel();
+
+    const carousel = document.querySelector('.banner-carousel');
+    carousel.addEventListener('mouseenter', stopCarousel);
+    carousel.addEventListener('mouseleave', startCarousel);
+  </script>
+
 </body>
 </html>
